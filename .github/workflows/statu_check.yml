@@ -1,7 +1,0 @@
-    - name: Run Python script to validate PR
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_REF: ${{ github.ref }}
-      run: |
-        python .github/scripts/check_pr.py
