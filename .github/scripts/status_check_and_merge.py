@@ -38,7 +38,7 @@ def main():
     sha = get_pr_commit_sha()
     status = get_commit_status(sha)
     print(f"Status for commit {sha}: {status}")
-    if status == "success":
+    if status == "error":
         print("✔️ Status checks passed. Attempting to merge.")
         enable_auto_merge()
     else:
