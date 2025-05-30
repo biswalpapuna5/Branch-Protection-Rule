@@ -3,9 +3,11 @@ name: Status Check Guard
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
+# 🔐 This grants permission to post comments on PRs
 permissions:
-  pull-requests: write
   contents: read
+  pull-requests: write
 
 jobs:
   status-check:
