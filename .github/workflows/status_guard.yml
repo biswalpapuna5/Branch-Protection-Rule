@@ -1,0 +1,28 @@
+name: Status Check Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  status-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run status check script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python .github/scripts/check_commit_status.py
