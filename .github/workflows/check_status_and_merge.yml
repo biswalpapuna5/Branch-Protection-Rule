@@ -1,14 +1,19 @@
-name: Require Status Check Before Merge
+name: Status Check Guard
  
 on:
   pull_request:
-    types: [synchronize, opened, reopened]
+    types: [opened, synchronize, reopened]
+ 
+permissions:
+  contents: read
+  pull-requests: write  # Needed to post comments on PRs
  
 jobs:
-  check-and-merge:
+  status-check:
     runs-on: ubuntu-latest
+ 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
  
       - name: Set up Python
@@ -19,9 +24,9 @@ jobs:
       - name: Install dependencies
         run: pip install requests
  
-      - name: Run status check and merge logic
+      - name: Run status check script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: python .github/scripts/status_check_and_merge.py
+        run: python .github/scripts/check_commit_status.py
