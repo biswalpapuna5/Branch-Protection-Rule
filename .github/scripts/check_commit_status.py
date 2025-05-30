@@ -25,9 +25,14 @@ def get_commit_status(sha):
 
 def comment_on_pr(message):
     url = f"{GITHUB_API}/repos/{REPO}/issues/{PR_NUMBER}/comments"
-    data = { "body": message }
+    data = {"body": message}
     resp = requests.post(url, headers=headers, json=data)
-    resp.raise_for_status()
+    
+    # Debug error if posting comment fails
+    if resp.status_code != 201:
+        print(f"❌ Failed to comment: {resp.status_code} - {resp.text}")
+        resp.raise_for_status()
+
     print("💬 Comment posted on PR.")
 
 def main():
