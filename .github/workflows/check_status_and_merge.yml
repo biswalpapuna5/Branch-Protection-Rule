@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write  # Needed to post comments on PRs
+  pull-requests: write  # Needed to post comments on PRssss
 
 jobs:
   status-check:
