@@ -1,32 +1,3 @@
-/*
-name: Require Status Check Before Merge
-
-on:
-  pull_request:
-    types: [synchronize, opened, reopened]
-
-jobs:
-  check-and-merge:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install dependencies
-        run: pip install requests
-
-      - name: Run status check and merge logic
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: python .github/scripts/status_check_and_merge.py
-        */
 name: Status Check Guard
 
 on:
