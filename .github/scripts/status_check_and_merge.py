@@ -7,7 +7,7 @@ REPO = os.getenv("REPO")
 PR_NUMBER = os.getenv("PR_NUMBER")
 
 headers = {
-    "Authorization": f"token {TOKEN}",
+    "Authorization": f"Bearer {TOKEN}",
     "Accept": "application/vnd.github+json"
 }
 
@@ -23,27 +23,28 @@ def get_commit_status(sha):
     resp.raise_for_status()
     return resp.json()["state"]
 
-def enable_auto_merge():
-    url = f"{GITHUB_API}/repos/{REPO}/pulls/{PR_NUMBER}/merge"
-    data = {
-        "merge_method": "merge"
-    }
-    resp = requests.put(url, headers=headers, json=data)
-    if resp.status_code == 200:
-        print("✅ Merge successful.")
-    else:
-        print(f"⚠️ Merge not done: {resp.status_code} - {resp.text}")
+def comment_on_pr(message):
+    url = f"{GITHUB_API}/repos/{REPO}/issues/{PR_NUMBER}/comments"
+    data = {"body": message}
+    resp = requests.post(url, headers=headers, json=data)
+    if resp.status_code != 201:
+        print(f"❌ Failed to post comment: {resp.status_code} - {resp.text}")
+        resp.raise_for_status()
+    print("💬 Comment posted on PR.")
 
 def main():
     sha = get_pr_commit_sha()
     status = get_commit_status(sha)
-    print(f"Status for commit {sha}: {status}")
-    
+    print(f"🔍 Status for commit {sha}: {status}")
+
     if status == "success":
-        print("✔️ Status checks passed. Attempting to merge.")
-        enable_auto_merge()
+        comment_on_pr("✅ All required status checks have passed. You can now manually merge this pull request.")
+    elif status in ["failure", "error"]:
+        comment_on_pr("❌ Status checks failed. Please fix the issues before merging.")
+    elif status == "pending":
+        comment_on_pr("⏳ Status checks are still pending. Please wait for them to complete before merging.")
     else:
-        print("❌ Status checks failed. Merge is disabled.")
+        comment_on_pr(f"⚠️ Unknown status: `{status}`. Manual review may be required.")
 
 if __name__ == "__main__":
     main()
