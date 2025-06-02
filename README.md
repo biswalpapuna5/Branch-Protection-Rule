@@ -1,2 +1,2 @@
 # Branch-Protection-Rule
-Branch-Protection-Rule
+Add a content success on feature branch.
